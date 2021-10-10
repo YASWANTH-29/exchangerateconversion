@@ -2,6 +2,7 @@ package com.exchangerates.exchangerateconversion.controller;
 
 import com.exchangerates.exchangerateconversion.Entity.ExchangerateData;
 import com.exchangerates.exchangerateconversion.repository.ExchangerateRepository;
+import com.exchangerates.exchangerateconversion.service.ExchangerateService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -27,102 +29,34 @@ public class ExchangerateController {
     @Autowired
     private ExchangerateData exchangerateData;
 
+    @Autowired
+    private ExchangerateService exchangerateService;
+
     @GetMapping("/data")
     public String getexchangerate() throws JsonProcessingException
     {
-        List<ExchangerateData> exchangeratelist = new ArrayList<>();
-
-        for (int i = 0; i <= 12 ; i++) {
-
-            String urlList = "http://api.exchangeratesapi.io/v1/" + YearMonth.now().minusMonths(i) + "-01" + "?access_key=9acd520731b3cae9fa41659c7483e8fb&base=eur&symbols=GBP,USD,HKD";
-
-            System.out.println(urlList);
-
-            RestTemplate restTemplate = new RestTemplate();
-
-            String response = restTemplate.getForEntity(urlList, String.class).getBody();
-
-            ObjectMapper objectMapper = new ObjectMapper();
-
-            JsonNode jsonNode = objectMapper.readTree(response);
-
-            exchangerateData = objectMapper.reader().forType(ExchangerateData.class).readValue(response);
-
-                    exchangeratelist.add(exchangerateData);
-        }
-        exchangerateRepository.saveAll(exchangeratelist);
-        return "data is saved";
+        return exchangerateService.getExchangerate();
     }
-    @GetMapping(value="/{date}")
+    @GetMapping("/{date}")
     public String getexchageratebydate(@PathVariable("date") String date) throws JsonProcessingException
     {
-        String url = "http://api.exchangeratesapi.io/v1/" + date +"?access_key=9acd520731b3cae9fa41659c7483e8fb&base=eur&symbols=GBP";
-
-        System.out.println(url);
-
-        RestTemplate restTemplate = new RestTemplate();
-
-        String response = restTemplate.getForEntity(url, String.class).getBody();
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode jsonNode = objectMapper.readTree(response);
-        exchangerateData = objectMapper.reader().forType(ExchangerateData.class).readValue(response);
-        exchangerateRepository.save(exchangerateData);
-
-        return "data saved by date";
+        return exchangerateService.getexchageratebydate(date);
     }
     @GetMapping("/alldata")
     public String getallexchangerate() throws JsonProcessingException
     {
-        List<ExchangerateData> exchangeratelist = new ArrayList<>();
-
-        for (int i = 0; i <= 12 ; i++) {
-
-            String urlList = "http://api.exchangeratesapi.io/v1/" + YearMonth.now().minusMonths(i) + "-01" + "?access_key=9acd520731b3cae9fa41659c7483e8fb&base=eur&symbols=";
-
-            System.out.println(urlList);
-
-            RestTemplate restTemplate = new RestTemplate();
-
-            String response = restTemplate.getForEntity(urlList, String.class).getBody();
-
-            ObjectMapper objectMapper = new ObjectMapper();
-
-            JsonNode jsonNode = objectMapper.readTree(response);
-            exchangerateData = objectMapper.reader().forType(ExchangerateData.class).readValue(response);
-
-            exchangeratelist.add(exchangerateData);
-        }
-        exchangerateRepository.saveAll(exchangeratelist);
-        return "All data is saved";
+        return exchangerateService.getallexchangerate();
     }
 
-@GetMapping("/{fromdate}/{todate}")
-public List<ExchangerateData> getExchangeRatesInBwtDates(String fromDate, String toDate) {
-    //logger.info("ExchangeRateService : getExchangeRatesInfoByDate");
-    String todayDate = getTodayDate();
-    List<ExchangerateData> exchangeRatesList = exchangerateRepository.findAllByDateBetween(fromDate,toDate);
-    ExchangerateData exchangerateData= exchangerateRepository.findByDate(todayDate);
-    exchangeRatesList.add(exchangerateData);
-    return exchangeRatesList;
+@GetMapping("/alldata/{fromdate}/{todate}")
+public List<ExchangerateData> getExchangeRatesInBwtDates(@PathVariable("fromdate") String fromDate, @PathVariable("todate") String toDate) throws JsonProcessingException {
+    return exchangerateService.getExchangeRatesInBwtDates(fromDate, toDate);
 }
 
-@GetMapping("/info/{date}")
-public Object getExchangeRatesInfoByDate(@PathVariable("date") String date) {
-
-    Object obj = new Object();
-   // boolean result = ExchangeRatesUtility.isDateValid(date, EchangeRatesConstants.DATE_FORMATE);
-    //if(result) {
-        exchangerateData = exchangerateRepository.findByDate(date);
-        obj = exchangerateData;
-
-    return obj;
+@GetMapping("/alldata/{date}")
+public void getExchangeRatesInfoByDate(@PathVariable("date") String date){
+         exchangerateService.getExchangeRatesInfoByDate(date);
 }
 
-    public static String getTodayDate() {
-     //   logger.info("ExchangeRatesUtility : getTodayDate");
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDateTime now = LocalDateTime.now();
-        return dtf.format(now);
-    }
+
 }

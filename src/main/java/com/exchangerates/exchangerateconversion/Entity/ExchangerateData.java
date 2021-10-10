@@ -2,9 +2,11 @@ package com.exchangerates.exchangerateconversion.Entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import org.hibernate.exception.DataException;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.Map;
 
 @Entity
