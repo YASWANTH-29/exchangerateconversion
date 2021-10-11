@@ -43,16 +43,18 @@ public class ExchangerateController {
         return exchangerateService.getallexchangerate();
     }
 
-@GetMapping("/alldata/{fromdate}/{todate}") //fourth end point
+    @GetMapping("/alldata/{date}")  //Fourth end point
+    public Double getExchangeRatesInfoByDate(@PathVariable("date") String date){
+        return exchangerateService.getExchangeRatesInfoByDate(date);
+    }
+
+    @GetMapping("/alldata/{fromdate}/{todate}") //Fifth end point
 public List<ExchangerateData> getExchangeRatesInBwtDates(@PathVariable("fromdate") String fromDate, @PathVariable("todate") String toDate)
 {
     return exchangerateService.getExchangeRatesInBwtDates(fromDate, toDate);
 }
 
-@GetMapping("/alldata/{date}")  //Fifth end point
-public Double getExchangeRatesInfoByDate(@PathVariable("date") String date){
-         return exchangerateService.getExchangeRatesInfoByDate(date);
-}
+
 
 
 }
