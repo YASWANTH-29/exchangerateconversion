@@ -63,7 +63,7 @@ public String getExchangerate() throws JsonProcessingException
     catch(JsonProcessingException jpe) {
         throw new CustomException("Unwanted data response from API call");
     }catch(ResourceAccessException rae) {
-        throw new CustomException("Intrnal Server is unavilable");
+        throw new CustomException("Internal Server is unavailable");
     }catch(Exception e) {
         throw new CustomException("Somthing went wrong can you try after sometime");
     }
@@ -73,7 +73,7 @@ public String getexchageratebydate(String date) throws JsonProcessingException
 {
     String url = "http://api.exchangeratesapi.io/v1/" + date +"?access_key=e75bf8b8ba4e743337a00b4de343f0eb&base=eur&symbols=GBP";
 
-    System.out.println(url);
+    //System.out.println(url);
 
     RestTemplate restTemplate = new RestTemplate();
 

@@ -26,29 +26,30 @@ public class ExchangerateController {
 
     @Autowired
     private ExchangerateService exchangerateService;
-    @GetMapping("/data")
+
+    @GetMapping("/data")  //First end point
     public String getexchangerate() throws JsonProcessingException
     {
         return exchangerateService.getExchangerate();
     }
-    @GetMapping("/{date}")
+    @GetMapping("/{date}") //Second end point
     public String getexchageratebydate(@PathVariable("date") String date) throws JsonProcessingException
     {
         return exchangerateService.getexchageratebydate(date);
     }
-    @GetMapping("/alldata")
+    @GetMapping("/alldata")  //Third end point
     public String getallexchangerate() throws JsonProcessingException
     {
         return exchangerateService.getallexchangerate();
     }
 
-@GetMapping("/alldata/{fromdate}/{todate}")
+@GetMapping("/alldata/{fromdate}/{todate}") //fourth end point
 public List<ExchangerateData> getExchangeRatesInBwtDates(@PathVariable("fromdate") String fromDate, @PathVariable("todate") String toDate)
 {
     return exchangerateService.getExchangeRatesInBwtDates(fromDate, toDate);
 }
 
-@GetMapping("/alldata/{date}")
+@GetMapping("/alldata/{date}")  //Fifth end point
 public Double getExchangeRatesInfoByDate(@PathVariable("date") String date){
          return exchangerateService.getExchangeRatesInfoByDate(date);
 }
