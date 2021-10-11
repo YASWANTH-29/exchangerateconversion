@@ -6,19 +6,14 @@ import com.exchangerates.exchangerateconversion.service.ExchangerateService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
-
-import java.time.LocalDateTime;
-import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 @RestController
 public class ExchangerateController {
@@ -31,7 +26,6 @@ public class ExchangerateController {
 
     @Autowired
     private ExchangerateService exchangerateService;
-
     @GetMapping("/data")
     public String getexchangerate() throws JsonProcessingException
     {
@@ -49,13 +43,14 @@ public class ExchangerateController {
     }
 
 @GetMapping("/alldata/{fromdate}/{todate}")
-public List<ExchangerateData> getExchangeRatesInBwtDates(@PathVariable("fromdate") String fromDate, @PathVariable("todate") String toDate) throws JsonProcessingException {
+public List<ExchangerateData> getExchangeRatesInBwtDates(@PathVariable("fromdate") String fromDate, @PathVariable("todate") String toDate)
+{
     return exchangerateService.getExchangeRatesInBwtDates(fromDate, toDate);
 }
 
 @GetMapping("/alldata/{date}")
-public void getExchangeRatesInfoByDate(@PathVariable("date") String date){
-         exchangerateService.getExchangeRatesInfoByDate(date);
+public Double getExchangeRatesInfoByDate(@PathVariable("date") String date){
+         return exchangerateService.getExchangeRatesInfoByDate(date);
 }
 
 

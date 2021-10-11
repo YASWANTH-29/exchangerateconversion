@@ -7,6 +7,7 @@ import com.exchangerates.exchangerateconversion.repository.ExchangerateRepositor
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -19,6 +20,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 
 @Service
@@ -124,16 +126,18 @@ public String getexchageratebydate(String date) throws JsonProcessingException
         return exchangeRatesList;
     }
 
-    public void getExchangeRatesInfoByDate(String date)
+    public Double getExchangeRatesInfoByDate(String date)
     {
         exchangerateData = exchangerateRepository.findByDate(date);
         Map<String,Double> rate=exchangerateData.getRates();
         Double obj=rate.get("GBP");
-        System.out.println("The GBP rate for givendate"+date+"is "+obj);
+        System.out.println("The GBP rate for givendate"+date+" is "+obj);
+        return obj;
     }
     public String getTodayDate() {
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDateTime now = LocalDateTime.now();
         return dtf.format(now);
     }
+
 }
