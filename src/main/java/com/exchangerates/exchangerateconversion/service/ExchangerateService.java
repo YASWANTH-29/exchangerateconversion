@@ -35,6 +35,11 @@ public class ExchangerateService {
     @Autowired
     private ExchangerateController exchangerateController;
 
+    /**
+     * This method received the request for GBP/USD/HKD currencies Exchange rate details
+     * from controller and will call Exchange API and get Exchange rate details and save
+     * details into H2 DB and sending response back user.
+     */
 public String getExchangerate() throws JsonProcessingException
 {
     try {
@@ -69,19 +74,24 @@ public String getExchangerate() throws JsonProcessingException
     }
 }
 
+    /**
+     * This method received the request for GBP currencies for particular date of Exchange rate details
+     * from controller and it will call Exchange API and get Exchange Rates details for particular date
+     * and save details into H2 DB and sending response back to user.
+     */
 public String getexchageratebydate(String date) throws JsonProcessingException
 {
-    String url = "http://api.exchangeratesapi.io/v1/" + date +"?access_key=e75bf8b8ba4e743337a00b4de343f0eb&base=eur&symbols=GBP";
+    String url = "http://api.exchangeratesapi.io/v1/" + date +"?access_key=e75bf8b8ba4e743337a00b4de343f0eb&base=eur&symbols=GBP"; // here we are trying to fetch the data from the external api by using url
 
     //System.out.println(url);
 
     RestTemplate restTemplate = new RestTemplate();
 
-    String response = restTemplate.getForEntity(url, String.class).getBody();
+    String response = restTemplate.getForEntity(url, String.class).getBody(); //Here we getting the response from the api which JSON data
 
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode = objectMapper.readTree(response);
-    exchangerateData = objectMapper.reader().forType(ExchangerateData.class).readValue(response);
+    exchangerateData = objectMapper.reader().forType(ExchangerateData.class).readValue(response); //inserting the data the into entities
     if(!exchangerateData.getRates().isEmpty()) {
         exchangerateRepository.save(exchangerateData);
 
@@ -90,6 +100,12 @@ public String getexchageratebydate(String date) throws JsonProcessingException
     else
         return "data is not retrived";
 }
+
+    /**
+     * This method received the request for All currencies Exchange rate details from
+     * Controller and it will call Exchange API and pull the Rate details and save
+     * details into H2 DB and sending response back to user.
+     */
     public String getallexchangerate() throws JsonProcessingException {
         List<ExchangerateData> exchangeratelist = new ArrayList<>();
 
@@ -117,6 +133,13 @@ public String getexchageratebydate(String date) throws JsonProcessingException
         else
             return "Data is not Retrived";
     }
+
+    /**
+     * This method received the request for All currencies Exchange rate details in between two
+     * dates from controller and it will call H2 DB and pull the details from DB and send details
+     * back to Controller to Display details into user console
+     */
+
     public List<ExchangerateData> getExchangeRatesInBwtDates(String fromdate,String todate)
     {
         String tday=getTodayDate();
@@ -126,6 +149,11 @@ public String getexchageratebydate(String date) throws JsonProcessingException
         return exchangeRatesList;
     }
 
+    /**
+     *This method received the request for All currencies Exchange rate details for particular date
+     * from controller and it will call H2 DB and pull the details from DB and send details
+     * back to Controller to Display details into user console
+     */
     public Double getExchangeRatesInfoByDate(String date)
     {
         exchangerateData = exchangerateRepository.findByDate(date);
